@@ -178,7 +178,7 @@
                 android:id="@+id/UserImageView"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/chicken"
+                android:src="@drawable/camera"
                 android:onClick="addIngToIngList"/>
             <!--android:src="getUserImageId"  fix this TODO-->
             <Button
