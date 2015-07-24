@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">My Recipe Collection</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main_recipe_categories">mainRecipeCategories</string>
+
+    <string name="addRecipe">הוסף מתכון</string>
+    <string name="myRecipes">המתכונים שלי</string>
+    <string name="title_activity_recipe_form">RecipeFormActivity</string>
+    <string name="title_activity_recipe">recipeActivity</string>
+</resources>

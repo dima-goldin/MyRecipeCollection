@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.lenovo.myrecipecollection.mainRecipeCategories">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/navigateBack"
+        android:title="back"
+        android:orderInCategory="200"
+        android:icon="@drawable/abc_ic_ab_back_mtrl_am_alpha"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/addCategory"
+        android:title="addCategory"
+        android:orderInCategory="200"
+        android:icon="@drawable/add_list"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/saveRecipe"
+        android:title="saveRecipe"
+        android:orderInCategory="200"
+        android:icon="@drawable/stock_save"
+        app:showAsAction="always"
+            />
+</menu>

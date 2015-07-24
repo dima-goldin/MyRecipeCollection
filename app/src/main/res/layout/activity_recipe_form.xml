@@ -1,0 +1,211 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.lenovo.myrecipecollection.RecipeFormActivity"
+    android:id="@+id/recipeFormID">
+
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView1"
+
+       >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="יצירת מתכון"
+                android:id="@+id/CreateRecipeTitle"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="40sp" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:text="שם המתכון"-->
+        <!--android:id="@+id/recipeNameTitle"-->
+        <!--android:textSize="20sp"-->
+        <!--android:layout_marginTop="73dp"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:hint="שם המתכון"
+        android:id="@+id/editRecipeName"
+        android:layout_marginTop="73dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="מצרכים"
+        android:id="@+id/ingredientsTitle"
+        android:textSize="20sp"
+        android:layout_below="@+id/editRecipeName"
+        android:layout_alignParentEnd="true" />
+     <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:id="@+id/ingredientListForm"
+        android:layout_below="@+id/addIngredientFormButton"
+        android:layout_alignEnd="@+id/editRecipeName"
+        android:fadeScrollbars="false"
+         android:longClickable="true"
+         />
+       <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:id="@+id/addIngredientFormButton"
+            android:layout_below="@+id/amountEdit"
+            android:layout_alignParentEnd="true"
+            android:onClick="addIngToIngList"/>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="אופן הכנה"
+        android:id="@+id/instructionsTitle"
+        android:textSize="20sp"
+
+        android:layout_below="@+id/ingredientListForm"
+        android:layout_alignEnd="@+id/editRecipeName" />
+
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editInstructions"
+                android:layout_below="@+id/instructionsTitle"
+                android:layout_alignParentEnd="true"
+                 />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="כמות"
+                android:id="@+id/amountTitle"
+                android:textSize="15sp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/ingredientsTitle"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="יחידות"
+                android:id="@+id/unitsTitle"
+                android:textSize="15sp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/ingredientsTitle"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="שם המצרך"
+                android:id="@+id/ingredientNameTitle"
+                android:textSize="15sp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/ingredientsTitle"
+                />
+
+            <EditText
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/amountEdit"
+                android:layout_below="@+id/amountTitle"
+                android:layout_toEndOf="@+id/unitsTitle"
+                android:layout_alignStart="@+id/ingredientsTitle"
+                 />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/IngNameEdit"
+                android:layout_below="@+id/ingredientNameTitle"
+                android:layout_alignEnd="@+id/ingredientNameTitle"
+                android:layout_alignParentStart="true"
+                />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/unitSpinner"
+            android:layout_alignEnd="@+id/unitsTitle"
+                android:spinnerMode="dropdown"
+                android:clickable="true"
+                android:layout_below="@+id/unitsTitle"
+                android:dropDownWidth="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
+                android:nestedScrollingEnabled="false" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/UserImageView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/chicken"
+                android:onClick="addIngToIngList"/>
+            <!--android:src="getUserImageId"  fix this TODO-->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="הוסף תמונה"
+                android:id="@+id/addPicButton"
+                android:layout_alignBottom="@+id/CreateRecipeTitle"
+                android:layout_toStartOf="@+id/unitsTitle"
+                android:layout_marginEnd="50dp"
+                android:onClick="choosePicForRecipe"/>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="שמור מתכון"
+        android:id="@+id/saveRecipeButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:textSize="20sp"
+        android:onClick="createAndSaveNewRecipe"/>
+
+
+</RelativeLayout>
