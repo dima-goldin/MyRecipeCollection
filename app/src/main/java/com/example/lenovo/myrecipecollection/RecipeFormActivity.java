@@ -209,6 +209,7 @@ public class RecipeFormActivity extends ActionBarActivity {
            alert.show();
            return;
        }
+
        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
        Cursor result=ourDataBase.rawQuery("SELECT Name FROM Recipes WHERE Name='"+recipeName+"'",null);
        if(result.getCount()!=0)
@@ -217,6 +218,7 @@ public class RecipeFormActivity extends ActionBarActivity {
            alert.setTitle("שגיאה");
            alert.setMessage("שם מתכון כבר קיים במערכת");
            alert.show();
+           return;
        }
        result.close();
        ourDataBase.close();

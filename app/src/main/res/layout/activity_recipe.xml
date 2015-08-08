@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/framebackground"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -7,15 +8,20 @@
     tools:context="com.example.lenovo.myrecipecollection.recipeActivity">
 
     <ScrollView
+
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/scrollView1"
 
-        >
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false">
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+
             >
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +30,9 @@
         android:text="שם המתכון"
         android:id="@+id/showRecipeNameTitle"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
 
      <ImageView
         android:layout_width="100dp"
@@ -34,7 +42,9 @@
         android:id="@+id/showIcon"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-         android:layout_alignLeft="@+id/showRecipeNameTitle"/>
+         android:layout_alignLeft="@+id/showRecipeNameTitle"
+         android:layout_marginLeft="10dp"
+         android:layout_marginTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +54,7 @@
         android:id="@+id/showIngsTitle"
         android:layout_below="@+id/showIcon"
         android:layout_alignParentEnd="true"
-         />
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -52,7 +62,8 @@
         android:id="@+id/showIngs"
         android:layout_below="@+id/showIngsTitle"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="#ffffa390" />
+        android:backgroundTint="#ffffa390"
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -62,7 +73,8 @@
         android:id="@+id/showInstructionsTitle"
         android:layout_below="@+id/showIngs"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -71,9 +83,14 @@
         android:layout_below="@+id/showInstructionsTitle"
         android:layout_alignParentEnd="true"
 
-        />
+        android:layout_marginRight="10dp" />
 
 
         </RelativeLayout>
     </ScrollView>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton2" />
 </RelativeLayout>
