@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/framebackground"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -29,7 +30,9 @@
                 android:id="@+id/CreateRecipeTitle"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:textSize="40sp" />
+                android:textSize="40sp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="1dp" />
     <!--<TextView-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
@@ -50,7 +53,8 @@
         android:id="@+id/editRecipeName"
         android:layout_marginTop="73dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
 
 
 
@@ -62,7 +66,8 @@
         android:id="@+id/ingredientsTitle"
         android:textSize="20sp"
         android:layout_below="@+id/editRecipeName"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
      <ListView
         android:layout_width="fill_parent"
         android:layout_height="200dp"
@@ -71,7 +76,8 @@
         android:layout_alignEnd="@+id/editRecipeName"
         android:fadeScrollbars="false"
          android:longClickable="true"
-         />
+         android:layout_marginLeft="10dp"
+         android:layout_marginRight="10dp" />
        <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
@@ -80,7 +86,8 @@
             android:id="@+id/addIngredientFormButton"
             android:layout_below="@+id/amountEdit"
             android:layout_alignParentEnd="true"
-            android:onClick="addIngToIngList"/>
+            android:onClick="addIngToIngList"
+           android:layout_marginRight="10dp" />
 
 
 
@@ -93,7 +100,8 @@
         android:textSize="20sp"
 
         android:layout_below="@+id/ingredientListForm"
-        android:layout_alignEnd="@+id/editRecipeName" />
+        android:layout_alignEnd="@+id/editRecipeName"
+        android:layout_marginRight="10dp" />
 
 
             <EditText
@@ -102,7 +110,8 @@
                 android:id="@+id/editInstructions"
                 android:layout_below="@+id/instructionsTitle"
                 android:layout_alignParentEnd="true"
-                 />
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp" />
 
 
             <TextView
@@ -114,7 +123,7 @@
                 android:textSize="15sp"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/ingredientsTitle"
-                />
+                android:layout_marginRight="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -137,7 +146,7 @@
                 android:textSize="15sp"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/ingredientsTitle"
-                />
+                android:layout_marginLeft="10dp" />
 
             <EditText
                 android:layout_width="80dp"
@@ -148,7 +157,7 @@
                 android:layout_below="@+id/amountTitle"
                 android:layout_toEndOf="@+id/unitsTitle"
                 android:layout_alignStart="@+id/ingredientsTitle"
-                 />
+                android:layout_marginRight="10dp" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -157,7 +166,7 @@
                 android:layout_below="@+id/ingredientNameTitle"
                 android:layout_alignEnd="@+id/ingredientNameTitle"
                 android:layout_alignParentStart="true"
-                />
+                android:layout_marginLeft="10dp" />
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -179,7 +188,10 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/camera"
-                android:onClick="addIngToIngList"/>
+                android:onClick="addIngToIngList"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp" />
             <!--android:src="getUserImageId"  fix this TODO-->
             <Button
                 android:layout_width="wrap_content"
@@ -189,7 +201,8 @@
                 android:layout_alignBottom="@+id/CreateRecipeTitle"
                 android:layout_toStartOf="@+id/unitsTitle"
                 android:layout_marginEnd="50dp"
-                android:onClick="choosePicForRecipe"/>
+                android:onClick="choosePicForRecipe"
+                android:layout_marginTop="10dp" />
 
 
         </RelativeLayout>
@@ -205,7 +218,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:textSize="20sp"
-        android:onClick="createAndSaveNewRecipe"/>
+        android:onClick="createAndSaveNewRecipe"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp" />
 
 
 </RelativeLayout>
