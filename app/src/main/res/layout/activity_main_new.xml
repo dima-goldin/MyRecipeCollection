@@ -5,14 +5,23 @@
 
     android:background="@drawable/framebackground"
 
-    android:gravity="top|center_horizontal">
+    android:gravity="top|center_horizontal"
+    android:weightSum="1">
 
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:id="@+id/headlineHebrew"
+        android:src="@drawable/headlinehebrew"
+        android:layout_marginTop="25dp"
+        android:layout_weight="0.03" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp">
+        android:layout_marginTop="200dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -31,6 +40,15 @@
             android:text="הוסף מתכון"
             android:textSize="25sp"
             android:onClick="openRecipeFormActivity"/>
+
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="197dp"
+        android:layout_height="226dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="bottom|center_horizontal"
+        android:src="@drawable/cupcake1new"
+        android:layout_marginTop="200dp" />
 
 </LinearLayout>

@@ -12,7 +12,8 @@ public enum Unit{
     TABLESPOON("כפות"),
     CUP("כוסות"),
     BOX("מיכלי"),
-    PACKAGE("חבילות");
+    PACKAGE("חבילות"),
+    KG("קילוגרם");
     //TODO add more
 
     private String fieldDescription;
@@ -46,6 +47,7 @@ public enum Unit{
             case 6:return Unit.CUP;
             case 7:return Unit.BOX;
             case 8:return Unit.PACKAGE;
+            case 9: return Unit.KG;
             default:return Unit.EMPTY;
 
         }
@@ -63,6 +65,7 @@ public enum Unit{
             case "כוסות":return 6;
             case "מיכלי":return 7;
             case "חבילות":return 8;
+            case "קילוגרם": return 9;
 
 
         }

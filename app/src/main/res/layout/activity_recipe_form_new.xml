@@ -34,9 +34,9 @@
                 android:text="יצירת מתכון"
                 android:id="@+id/CreateRecipeTitle"
                 android:layout_gravity="right"
-                android:textSize="35sp"
+                android:textSize="30sp"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginRight="18dp" />
         </RelativeLayout>
 
@@ -50,8 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/editRecipeName"
+                android:textSize="25sp"
                 android:hint="שם המתכון"
-                android:layout_marginRight="18dp" />
+                android:layout_marginRight="22dp" />
 
         </LinearLayout>
 
@@ -66,8 +67,9 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="מצרכים"
                 android:id="@+id/textView2"
+                android:textSize="25sp"
                 android:layout_gravity="right"
-                android:layout_marginRight="18dp" />
+                android:layout_marginRight="23dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,14 +82,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
-                android:id="@+id/layout">
+                android:id="@+id/layout"
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="שם המצרך"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:id="@+id/ingredientNameTitle"
                     android:layout_marginLeft="18dp" />
 
@@ -97,7 +100,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="יחידות"
                     android:id="@+id/unitsTitle"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:layout_marginLeft="170dp"
                     android:layout_marginRight="170dp" />
 
@@ -105,23 +108,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:text="כמות"
                     android:id="@+id/amountTitle"
                     android:layout_marginRight="18dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/IngNameEdit"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="18dp" />
+                    android:layout_marginLeft="150dp"
+                    android:layout_alignParentStart="true"
+                    android:minWidth="80dp" />
 
                 <Spinner
                     android:layout_width="wrap_content"
@@ -131,21 +135,21 @@
                     android:dropDownWidth="wrap_content"
                     android:spinnerMode="dropdown"
                     android:clickable="true"
-                    android:layout_weight="1"
-                    android:layout_marginRight="18dp"
-                    android:layout_marginLeft="18dp" />
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="170dp"
+                    android:layout_marginRight="170dp"/>
 
                 <EditText
 
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:inputType="numberDecimal"
                     android:ems="10"
                     android:id="@+id/amountEdit"
-                    android:layout_weight="1"
-                    android:layout_marginRight="18dp" />
+                    android:layout_marginRight="130dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
 
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -159,9 +163,9 @@
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:text="+"
-                android:onClick="addIngToIngList"
                 android:id="@+id/addIngredientFormButton"
-                android:layout_marginRight="18dp" />
+                android:layout_marginRight="22dp"
+                android:onClick="addIngToIngList"/>
         </LinearLayout>
 
         <LinearLayout
@@ -175,6 +179,7 @@
                 android:id="@+id/ingredientListForm"
                 android:longClickable="true"
                 android:nestedScrollingEnabled="true"
+                android:fadeScrollbars="false"
                 android:layout_marginRight="18dp"
                 android:layout_marginLeft="18dp" />
         </LinearLayout>
@@ -190,9 +195,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="אופן הכנה"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:id="@+id/instructionsTitle"
-                android:layout_marginRight="18dp" />
+                android:layout_marginRight="23dp" />
         </LinearLayout>
 
         <LinearLayout

@@ -45,7 +45,7 @@ public class RecipeFormActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_form);
+        setContentView(R.layout.activity_recipe_form_new);
 
         ingredientsList = new ArrayList<Ingredient>();
         ingStringList = new ArrayList<String>();

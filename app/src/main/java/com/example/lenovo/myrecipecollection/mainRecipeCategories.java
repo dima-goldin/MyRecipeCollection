@@ -46,7 +46,7 @@ public class mainRecipeCategories extends ActionBarActivity {
 
     private String parentCategory=null;
 
-    private android.support.v7.widget.Toolbar toolbar;
+  //  private android.support.v7.widget.Toolbar toolbar;
 
     private List<Category> mainCategoriesList= new ArrayList<Category>();
 
@@ -55,13 +55,13 @@ public class mainRecipeCategories extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_recipe_categories);
+        setContentView(R.layout.activity_main_recipe_categories_new);
 //todo make save button invisable
         //populateMainCategoriesList();
         populateMainListView();
 
-        toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.categorybar);
-        setSupportActionBar(toolbar);
+    //    toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.categorybar);
+      //  setSupportActionBar(toolbar);
         populateCategoriesList(null);
         if(getCallingActivity()!=null)
         {

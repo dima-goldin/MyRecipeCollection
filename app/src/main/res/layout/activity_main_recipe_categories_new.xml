@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/framebackground"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    android:background="@drawable/framebackground"
+
     <LinearLayout
-        android:background="@drawable/framebackground"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,15 +17,15 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="המתכונים שלי"
             android:textSize="30sp"
-            android:layout_marginTop="18dp"
-            android:layout_marginRight="18dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="22dp" />
 
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mainCategoriesListView"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp" />
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
     </LinearLayout>
 
 </LinearLayout>

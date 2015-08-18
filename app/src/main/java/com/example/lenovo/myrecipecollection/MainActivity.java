@@ -20,17 +20,17 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     private Intent intent;
-    private android.support.v7.widget.Toolbar toolbar;
+ //   private android.support.v7.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_new);
        //getWindow().setBackgroundDrawableResource(R.drawable.cupcakebackground1new);
         getWindow().setBackgroundDrawableResource(R.color.accentColor);
 
-        toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+       // toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.app_bar);
+    //    setSupportActionBar(toolbar);
 
         loadDataBase();
 
