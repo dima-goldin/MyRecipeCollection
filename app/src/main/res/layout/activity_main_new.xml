@@ -15,7 +15,8 @@
         android:id="@+id/headlineHebrew"
         android:src="@drawable/headlinehebrew"
         android:layout_marginTop="25dp"
-        android:layout_weight="0.03" />
+        android:layout_weight="0.03"
+        android:layout_margin="25dp" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -43,12 +44,19 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="197dp"
-        android:layout_height="226dp"
-        android:id="@+id/imageView"
-        android:layout_gravity="bottom|center_horizontal"
-        android:src="@drawable/cupcake1new"
-        android:layout_marginTop="200dp" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="197dp"
+            android:layout_height="226dp"
+            android:id="@+id/imageView"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/cupcake1new"
+            android:layout_marginTop="200dp"
+            android:layout_marginBottom="25dp" />
+    </LinearLayout>
 
 </LinearLayout>
