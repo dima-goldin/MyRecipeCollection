@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -72,6 +73,25 @@ public class mainRecipeCategories extends ActionBarActivity {
         ListView listView=(ListView)findViewById(R.id.mainCategoriesListView);
         registerForContextMenu(listView);
 
+        Intent intent = getIntent();
+        String fromSavingRecipe = intent.getStringExtra(RecipeFormActivity.SAVEING_RECIPE);
+        if(fromSavingRecipe != null)
+        {
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.main_recipe_cat_parent_layout);
+            Button button = new Button(this);
+            button.setText("שמור");
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            params.setMargins(50, 50, 0, 0);
+            button.setLayoutParams(params);
+
+            layout.addView(button);
+
+            TextView textView = (TextView) findViewById(R.id.myRecipesTitle);
+            textView.setText("איפה תרצו לשמור את המתכון?");
+        }
+
     }
 
 //    private void longClickOnCategoriesList() {
@@ -84,6 +104,13 @@ public class mainRecipeCategories extends ActionBarActivity {
 //            }
 //        });
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateMainListView();
+    }
 
     private void populateMainListView() {
         adapter=new MyMainCategoryListAdapter();

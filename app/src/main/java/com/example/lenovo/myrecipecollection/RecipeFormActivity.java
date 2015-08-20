@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 public class RecipeFormActivity extends ActionBarActivity {
     public static final int GET_FROM_GALLERY = 3;
+    public static final String SAVEING_RECIPE = "SAVING_RECIPE";
 
     public int RESULT_LOAD_IMAGE;
     private ArrayList<String> ingStringList;
@@ -234,6 +235,7 @@ public class RecipeFormActivity extends ActionBarActivity {
 
 
        Intent intent=new Intent(getApplicationContext(),mainRecipeCategories.class);
+       intent.putExtra(SAVEING_RECIPE,SAVEING_RECIPE);
        startActivityForResult(intent,1);
 
    }

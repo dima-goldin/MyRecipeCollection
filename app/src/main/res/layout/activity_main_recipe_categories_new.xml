@@ -4,11 +4,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="right">
+        android:gravity="right"
+        android:id="@+id/main_recipe_cat_parent_layout">
 
         <TextView
             android:id="@+id/myRecipesTitle"
@@ -18,14 +19,17 @@
             android:text="המתכונים שלי"
             android:textSize="30sp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="22dp" />
+            android:layout_marginRight="22dp"
+            android:layout_alignParentRight="true"
+            />
 
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mainCategoriesListView"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-    </LinearLayout>
+            android:layout_marginRight="20dp"
+            android:layout_below="@+id/myRecipesTitle"/>
+    </RelativeLayout>
 
 </LinearLayout>
