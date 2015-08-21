@@ -88,7 +88,10 @@ public class mainRecipeCategories extends ActionBarActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("categoryFather",parentCategory);
+                    setResult(RESULT_OK,returnIntent);
+                    finish();
                 }
             });
             layout.addView(button);
@@ -312,7 +315,7 @@ public class mainRecipeCategories extends ActionBarActivity {
     public void onCreateContextMenu(ContextMenu menu,View v,ContextMenu.ContextMenuInfo menuInfo){
 
         menu.setHeaderTitle("אפשרויות");
-        String[] options = {"הסר","חזור"};
+        String[] options = {"הסר","חזור", "ערוך"};
 
         for(String option: options)
         {
