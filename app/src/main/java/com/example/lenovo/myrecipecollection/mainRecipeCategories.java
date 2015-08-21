@@ -85,7 +85,12 @@ public class mainRecipeCategories extends ActionBarActivity {
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             params.setMargins(50, 50, 0, 0);
             button.setLayoutParams(params);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                }
+            });
             layout.addView(button);
 
             TextView textView = (TextView) findViewById(R.id.myRecipesTitle);
