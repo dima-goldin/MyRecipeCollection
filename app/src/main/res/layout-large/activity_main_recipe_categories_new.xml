@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="המתכונים שלי"
-            android:textSize="25sp"
+            android:textSize="30sp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="22dp"
             android:layout_alignParentRight="true"
@@ -29,9 +29,7 @@
             android:id="@+id/mainCategoriesListView"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_below="@+id/myRecipesTitle"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp" />
+            android:layout_below="@+id/myRecipesTitle"/>
     </RelativeLayout>
 
 </LinearLayout>

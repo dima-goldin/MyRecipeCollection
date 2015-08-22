@@ -22,6 +22,15 @@
             android:layout_height="fill_parent"
             >
 
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageButton2"
+                android:layout_marginLeft="10dp"
+                android:layout_alignBottom="@+id/editRecipeName"
+                android:layout_alignEnd="@+id/ingredientNameTitle"
+                android:layout_alignTop="@+id/CreateRecipeTitle" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,7 +39,7 @@
                 android:id="@+id/CreateRecipeTitle"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="1dp" />
     <!--<TextView-->
@@ -51,10 +60,10 @@
         android:ems="10"
         android:hint="שם המתכון"
         android:id="@+id/editRecipeName"
-        android:layout_marginTop="73dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+
+        android:layout_below="@+id/CreateRecipeTitle"
+        android:layout_alignEnd="@+id/CreateRecipeTitle"
+        android:layout_alignStart="@+id/CreateRecipeTitle" />
 
 
 
@@ -70,7 +79,7 @@
         android:layout_marginRight="10dp" />
      <ListView
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:id="@+id/ingredientListForm"
         android:layout_below="@+id/addIngredientFormButton"
         android:layout_alignEnd="@+id/editRecipeName"
@@ -87,7 +96,10 @@
             android:layout_below="@+id/amountEdit"
             android:layout_alignParentEnd="true"
             android:onClick="addIngToIngList"
-           android:layout_marginRight="10dp" />
+           android:layout_marginRight="10dp"
+           android:textSize="5sp"
+           android:layout_alignBottom="@+id/unitSpinner"
+           android:layout_alignStart="@+id/amountTitle" />
 
 
 
@@ -97,7 +109,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="אופן הכנה"
         android:id="@+id/instructionsTitle"
-        android:textSize="20sp"
+        android:textSize="15sp"
 
         android:layout_below="@+id/ingredientListForm"
         android:layout_alignEnd="@+id/editRecipeName"
@@ -181,46 +193,26 @@
                 android:focusableInTouchMode="false"
                 android:nestedScrollingEnabled="false" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:id="@+id/UserImageView"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:src="@drawable/camera"
-                android:onClick="addIngToIngList"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp" />
             <!--android:src="getUserImageId"  fix this TODO-->
+
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="הוסף תמונה"
-                android:id="@+id/addPicButton"
-                android:layout_alignBottom="@+id/CreateRecipeTitle"
-                android:layout_toStartOf="@+id/unitsTitle"
-                android:layout_marginEnd="50dp"
-                android:onClick="choosePicForRecipe"
-                android:layout_marginTop="10dp" />
-
-
+                android:text="שמור מתכון"
+                android:id="@+id/saveRecipeButton"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:textSize="15sp"
+                android:onClick="createAndSaveNewRecipe"
+                android:layout_below="@+id/editInstructions"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp" />
         </RelativeLayout>
     </ScrollView>
 
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="שמור מתכון"
-        android:id="@+id/saveRecipeButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:textSize="20sp"
-        android:onClick="createAndSaveNewRecipe"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp" />
 
 
 </RelativeLayout>

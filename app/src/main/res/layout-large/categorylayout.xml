@@ -5,8 +5,8 @@
     android:id="@+id/categoryLayout">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/CategoryIcon"
         android:src="@drawable/chicken"
         android:maxHeight="100dp"
@@ -23,7 +23,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="אינציקלופדיה"
         android:id="@+id/categoryName"
-        android:textSize="20dp"
+        android:textSize="30sp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="30dp"
