@@ -5,6 +5,19 @@ public class Ingredient {
     private Double amount;
    private Unit unit;
     private String name;
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
 
     public Ingredient(double amount,Unit unit, String name) {
         this.amount = amount;

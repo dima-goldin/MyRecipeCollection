@@ -16,52 +16,30 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class recipeActivity extends ActionBarActivity {
+    MySQLiteHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        db = new MySQLiteHelper(this);
         String recipeName=getIntent().getExtras().getString("key");
         showRecipe(recipeName);
 
     }
 
     private void showRecipe(String recipeName) {
-        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-        Cursor recipeCursor;
-        recipeCursor=ourDataBase.rawQuery("SELECT * FROM Recipes WHERE Name='"+ recipeName+"'",null);
-        recipeCursor.moveToFirst();
-        if(recipeCursor==null)
-        {
-            // Error TODO
-            return;
-        }
-        Cursor ingsCursor;
-
-        ingsCursor=ourDataBase.rawQuery("SELECT Name,Amount,Unit FROM Ingredients WHERE RecipeName='"+recipeName+"'",null);
-        String recipeInstructions=recipeCursor.getString(1);
-        String recipeFatherCategory=recipeCursor.getString(2);
-        int recipeIconId=recipeCursor.getInt(3);
-
-        List<Ingredient> ingredientList=new ArrayList<Ingredient>();
-        while(ingsCursor.moveToNext())
-        {
-            String Name=ingsCursor.getString(0);
-            double Amount=ingsCursor.getDouble(1);
-            Unit unit=Unit.returnUnitByInt(ingsCursor.getInt(2));
-            ingredientList.add(new Ingredient(Amount,unit,Name));
-        }
-
-        ourDataBase.close();
-        fillRecipe(recipeName,recipeInstructions,recipeIconId,ingredientList,recipeFatherCategory);
-
-
+        Recipe recipe = db.getRecipe(recipeName);
+        fillRecipe(recipeName, recipe.getInstructions(), recipe.getIconID(), recipe.getIngredientList(), recipe.getParent());
     }
+
     private void fillRecipe(String name,String instructions,int iconId,List<Ingredient> ingredientList,String father)
     {
         TextView nameView= (TextView) findViewById(R.id.showRecipeNameTitle);
@@ -118,9 +96,7 @@ public class recipeActivity extends ActionBarActivity {
                                                 public void onClick(View v) {
                                                     EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
                                                     String newCategoryName = nameText.getText().toString();
-                                                    SQLiteDatabase ourDataBase = openOrCreateDatabase("ourDataBase", MODE_PRIVATE, null);
-                                                    ourDataBase.execSQL("INSERT INTO Categories (Name,IconId)VALUES('" + newCategoryName + "',-1)");//todo if user put image than insert real iconId
-                                                    ourDataBase.close();
+                                                    db.insertCategory(newCategoryName,null,-1);
                                                     popupWindow.dismiss();
 
 

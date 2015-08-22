@@ -33,12 +33,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class mainRecipeCategories extends ActionBarActivity {
 
+    private MySQLiteHelper db;
     private Point p=new Point(10,10);
     private Intent intent;
 
@@ -58,8 +61,9 @@ public class mainRecipeCategories extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recipe_categories_new);
 //todo make save button invisable
-        //populateMainCategoriesList();
+        db = new MySQLiteHelper(this);
         populateMainListView();
+
 
     //    toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.categorybar);
       //  setSupportActionBar(toolbar);
@@ -117,7 +121,8 @@ public class mainRecipeCategories extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populateMainListView();
+        //populateMainListView();
+        populateCategoriesList(parentCategory);
     }
 
     private void populateMainListView() {
@@ -197,41 +202,33 @@ public class mainRecipeCategories extends ActionBarActivity {
         //get from database all recipes and categories that parent is parent
         //clear adapter
         // in a loop add all those to the mainCategoriesList
-        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-        Cursor resultSet1;
-        Cursor resultSet2;
-        if(parent==null)
-        {
-            resultSet1 =ourDataBase.rawQuery("SELECT Name,CategoryFather,IconID FROM Categories WHERE CategoryFather IS NULL", null);
-            resultSet2 =ourDataBase.rawQuery("SELECT Name,CategoryFather,IconID FROM Recipes WHERE CategoryFather IS NULL",null);
 
-        }
-        else{
-            resultSet1=ourDataBase.rawQuery("SELECT Name,CategoryFather,IconID FROM Categories WHERE CategoryFather='"+parent+"'",null);
-            resultSet2=ourDataBase.rawQuery("SELECT Name,CategoryFather,IconID FROM Recipes WHERE CategoryFather='"+parent+"'",null);
 
-        }
         mainCategoriesList.clear();
-        while(resultSet1.moveToNext())
+        ArrayList<Category> categories = db.getCategoriesByFather(parent);
+        if(categories != null)
         {
-            String name=resultSet1.getString(0);
-            String father=resultSet1.getString(1);
-            int iconId=resultSet1.getInt(2);
-            mainCategoriesList.add(new Category(name,iconId,father,"קטגוריה"));
-
+            for(Category category : categories)
+            {
+                category.setDescription("קטגוריה");
+                mainCategoriesList.add(category);
+            }
         }
-
-        while(resultSet2.moveToNext())
+        ArrayList<Recipe> recipesByCategory = db.getRecipesByCategory(parent);
+        if(recipesByCategory != null)
         {
-            String name=resultSet2.getString(0);
-            String father=resultSet2.getString(1);
-            int iconId=resultSet2.getInt(2);
-            mainCategoriesList.add(new Category(name,iconId,father,"מתכון"));
+            for(Recipe recipe : recipesByCategory)
+            {
+                String name=recipe.getName();
+                String father=recipe.getParent();
+                int iconId=recipe.getIconID();
+                mainCategoriesList.add(new Category(name,iconId,father,"מתכון"));
 
+            }
         }
         adapter.notifyDataSetChanged();
-        ourDataBase.close();
         parentCategory=parent;
+
     }
 
     @Override
@@ -275,16 +272,14 @@ public class mainRecipeCategories extends ActionBarActivity {
                    public void onClick(View v){
                    EditText nameText= (EditText)popupView.findViewById(R.id.editPopUpCategoryName);
                    String newCategoryName=nameText.getText().toString();
-                   SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
                    if(parentCategory==null)
                    {
-                       ourDataBase.execSQL("INSERT INTO Categories (Name,IconId)VALUES('"+newCategoryName+"',-1)");//todo if user put image than insert real iconId
+                       db.insertCategory(newCategoryName,null,-1);
                    }
                    else
                    {
-                       ourDataBase.execSQL("INSERT INTO Categories (Name,CategoryFather,IconId)VALUES('"+newCategoryName+"','"+parentCategory+"',-1)");//todo if user put image than insert real iconId
+                       db.insertCategory(newCategoryName,parentCategory,-1);
                    }
-                   ourDataBase.close();
                    popupWindow.dismiss();
                    populateCategoriesList(parentCategory);
 
@@ -318,64 +313,57 @@ public class mainRecipeCategories extends ActionBarActivity {
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info= (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final int selectedIndex = info.position;
+        Category selectedCategory=mainCategoriesList.get(selectedIndex);
+        final String desc=selectedCategory.getDescription();
+        final String name=selectedCategory.getName();
+        if(item.getTitle().equals("ערוך")){
+            if(desc.equals("מתכון"))
+            {
+                Intent editIntent = new Intent(this,RecipeFormActivity.class);
+                editIntent.putExtra("edit","yes");
+                editIntent.putExtra("recipeName", name);
+                startActivity(editIntent);
+            }
 
+        }
         if(item.getTitle().equals("הסר")){
 
-            Category selectedCategory=mainCategoriesList.get(selectedIndex);
-            final String desc=selectedCategory.getDescription();
-            final String name=selectedCategory.getName();
-
-            SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-            Cursor cursor= ourDataBase.rawQuery("SELECT Name FROM Categories WHERE CategoryFather='"+name+"'",null);
-            if(cursor.getCount()!=0)
+            ArrayList<Category> categories = db.getCategoriesByFather(name);
+            if(categories != null && categories.size() != 0)
             {
-
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("שגיאה!");
                 alert.setMessage("לא ניתן למחוק קטגוריה המכילה תתי קטגוריות");
-                cursor.close();
-                ourDataBase.close();
                 alert.show();
                 return false;
             }
-            cursor.close();
-
 
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle("אזהרה!");
             alert.setMessage("אתם עומדים למחוק מתכון או קטגוריה יחד עם כל תכולותו. להמשיך במחיקה?");
-            alert.setPositiveButton("המשך",new DialogInterface.OnClickListener() {
+            alert.setPositiveButton("המשך", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //erase
-                    if(desc=="מתכון")
-                    {
-                        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-                        ourDataBase.execSQL("DELETE FROM Recipes WHERE Name='"+name+"'");
-                        ourDataBase.execSQL(("DELETE FROM Ingredients WHERE RecipeName='"+name+"'"));
-
-                        ourDataBase.close();
-                    }
-                    else if(desc=="קטגוריה")
-                    {
-                        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-
-                        Cursor recipeCursorSet=ourDataBase.rawQuery("SELECT Name FROM Recipes WHERE CategoryFather='"+name+"'",null);
-                        while(recipeCursorSet.moveToNext())
-                        {
-                            String currentRecipeName=recipeCursorSet.getString(0);
-                            ourDataBase.execSQL("DELETE FROM Ingredients WHERE RecipeName='"+currentRecipeName+"'");
+                    if (desc.equals("מתכון")) {
+                        db.deleteRecipe(name);
+                        db.deleteRecipeIngredients(name);
+                    } else if (desc.equals("קטגוריה")) {
+                        ArrayList<Recipe> recipes = db.getRecipesByCategory(name);
+                        db.deleteCategory(name);
+                        if (recipes != null) {
+                            for (Recipe recipe : recipes) {
+                                db.deleteRecipeIngredients(recipe.getName());
+                                db.deleteRecipe(recipe.getName());
+                            }
                         }
-                        ourDataBase.execSQL("DELETE FROM Recipes WHERE CategoryFather='"+name+"'");
-                        ourDataBase.execSQL("DELETE FROM Categories WHERE Name='"+name+"'");
-                        recipeCursorSet.close();
-                        ourDataBase.close();
+
                     }
                     mainCategoriesList.remove(selectedIndex);
                     adapter.notifyDataSetChanged();
                 }
             });
-            alert.setNegativeButton("בטל",new DialogInterface.OnClickListener() {
+            alert.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;

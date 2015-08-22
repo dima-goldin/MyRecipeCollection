@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 import com.example.lenovo.myrecipecollection.ourUtilities.ScreenUtils;
 
 import java.io.File;
@@ -24,63 +25,18 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     private Intent intent;
+    MySQLiteHelper db;
  //   private android.support.v7.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_new);
-       //getWindow().setBackgroundDrawableResource(R.drawable.cupcakebackground1new);
+        db = new MySQLiteHelper(this);
         getWindow().setBackgroundDrawableResource(R.color.accentColor);
 
-       // toolbar= (android.support.v7.widget.Toolbar) findViewById(R.id.app_bar);
-    //    setSupportActionBar(toolbar);
-
-        loadDataBase();
-
     }
 
-    private void loadDataBase() {
-       // deleteDatabase("ourDataBase");
-        if(dataBaseExists((ContextWrapper) getApplicationContext(),"ourDataBase"))
-        {
-            return;
-        }
-
-        SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-
-        ourDataBase.execSQL(
-                            "CREATE TABLE Categories (Name text not null primary key,CategoryFather text, IconId integer);");
-        ourDataBase.execSQL(
-                            "CREATE TABLE Recipes (Name text not null primary key,Instructions text,CategoryFather text, IconId integer);");
-        ourDataBase.execSQL(
-                            "CREATE TABLE Ingredients (ID integer not null primary key autoincrement,Name text not null,Amount double, Unit integer, RecipeName text not null);");
-        int chickenPicId=R.drawable.chicken;
-        ourDataBase.execSQL(
-                "INSERT INTO Categories (Name,IconId) VALUES('בשרים',"+chickenPicId+")"
-        );
-        int dessertPic=R.drawable.cupcakebackground2;
-        ourDataBase.execSQL(
-                "INSERT INTO Categories (Name,IconId) VALUES('קינוחים',"+dessertPic+")"
-        );
-        int cupCakePic=R.drawable.cupcake1;
-        //TODO debug
-        String instruction1="לערבב בכלי הרבה אהבה עם סוכר"+"\n"+"לחמם את התנור לחום גבוה"+"\n"+"להגיש חם";
-        ourDataBase.execSQL(
-                "INSERT INTO Recipes (Name,Instructions,IconId) VALUES('עוגה','"+instruction1+"',"+cupCakePic+")"
-        );
-        ourDataBase.execSQL(
-                "INSERT INTO Recipes (Name,IconId,CategoryFather) VALUES('עוגת גבינה',"+cupCakePic+",'קינוחים')"
-        );
-        ourDataBase.execSQL(
-                "INSERT INTO Ingredients (Name,Amount,Unit,RecipeName)VALUES('בננות',"+"'30'"+","+"1"+","+"'עוגה'"+")"
-        );
-        ourDataBase.execSQL(
-                "INSERT INTO Ingredients (Name,Amount,Unit,RecipeName)VALUES('סוכר',"+"'100'"+","+"5"+","+"'עוגה'"+")"
-        );
-        ourDataBase.close();
-
-    }
     private static boolean dataBaseExists(ContextWrapper context,String dbName)
     {
         File dbFile= context.getDatabasePath(dbName);
@@ -116,7 +72,6 @@ public class MainActivity extends ActionBarActivity {
             });
             popupWindow.setFocusable(true);
             popupWindow.showAsDropDown(findViewById(R.id.headlineHebrew));
-            //popupWindow.showAtLocation(this.g, Gravity.CENTER,0,0);
 
             Button submitButton=(Button)popupView.findViewById(R.id.popUpSubmitCategoryButton);
             submitButton.setOnClickListener(new Button.OnClickListener() {
@@ -124,9 +79,7 @@ public class MainActivity extends ActionBarActivity {
                                                 public void onClick(View v) {
                                                     EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
                                                     String newCategoryName = nameText.getText().toString();
-                                                    SQLiteDatabase ourDataBase = openOrCreateDatabase("ourDataBase", MODE_PRIVATE, null);
-                                                    ourDataBase.execSQL("INSERT INTO Categories (Name,IconId)VALUES('" + newCategoryName + "',-1)");//todo if user put image than insert real iconId
-                                                    ourDataBase.close();
+                                                    db.insertCategory(newCategoryName,null,-1);
                                                     popupWindow.dismiss();
 
 
@@ -163,6 +116,7 @@ public class MainActivity extends ActionBarActivity {
     public void openRecipeFormActivity(View view)
     {
         Intent intent = new Intent(this,RecipeFormActivity.class);
+        intent.putExtra("edit","no");
         startActivity(intent);
 
     }

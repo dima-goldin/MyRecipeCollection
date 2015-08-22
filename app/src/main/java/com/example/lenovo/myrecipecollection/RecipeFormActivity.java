@@ -2,6 +2,7 @@ package com.example.lenovo.myrecipecollection;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.EntityIterator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,6 +29,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ public class RecipeFormActivity extends ActionBarActivity {
     public static final int GET_FROM_GALLERY = 3;
     public static final String SAVEING_RECIPE = "SAVING_RECIPE";
 
+
+    MySQLiteHelper db;
     public int RESULT_LOAD_IMAGE;
     private ArrayList<String> ingStringList;
     private ArrayAdapter<String> arrayAdapterIngStringList;
@@ -46,11 +51,15 @@ public class RecipeFormActivity extends ActionBarActivity {
     private String recipeName=null;
     private String recipeInstructions=null;
     private int recipeIconId=0;
+    Recipe recipeToEdit;
+    Boolean editMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_form_new);
+        db = new MySQLiteHelper(this);
+
 
         ingredientsList = new ArrayList<Ingredient>();
         ingStringList = new ArrayList<String>();
@@ -78,6 +87,45 @@ public class RecipeFormActivity extends ActionBarActivity {
         for (Unit unit:Unit.values()) {
             arrayAdapterUnitList.add(unit.toString());
         }
+
+
+        if(checkForEditMode(this))
+        {
+            editRecipe(recipeToEdit);
+        }
+    }
+
+    private void editRecipe(Recipe recipeToEdit) {
+        //TODO
+        EditText title = (EditText) findViewById(R.id.editRecipeName);
+        EditText instructions = (EditText) findViewById(R.id.editInstructions);
+
+        title.setText(recipeToEdit.getName());
+        ingredientsList.addAll(recipeToEdit.getIngredientList());
+        for(Ingredient ingredient : ingredientsList)
+        {
+            ingStringList.add(ingredient.toString());
+        }
+        instructions.setText(recipeToEdit.getInstructions());
+
+    }
+
+    private boolean checkForEditMode(RecipeFormActivity recipeFormActivity) {
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle == null)
+        {
+            return editMode;
+        }
+        String edit = bundle.getString("edit");
+        if(edit != null && edit.equals("yes"))
+        {
+            //edit mode
+            String recipeNameToEdit = bundle.getString("recipeName");
+            recipeToEdit = db.getRecipe(recipeNameToEdit);
+            editMode = true;
+        }
+        return editMode;
     }
 
     @Override
@@ -146,9 +194,7 @@ public class RecipeFormActivity extends ActionBarActivity {
                                                 public void onClick(View v) {
                                                     EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
                                                     String newCategoryName = nameText.getText().toString();
-                                                    SQLiteDatabase ourDataBase = openOrCreateDatabase("ourDataBase", MODE_PRIVATE, null);
-                                                    ourDataBase.execSQL("INSERT INTO Categories (Name,IconId)VALUES('" + newCategoryName + "',-1)");//todo if user put image than insert real iconId
-                                                    ourDataBase.close();
+                                                    db.insertCategory(newCategoryName,null,-1);
                                                     popupWindow.dismiss();
 
 
@@ -258,9 +304,8 @@ public class RecipeFormActivity extends ActionBarActivity {
            return;
        }
 
-       SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-       Cursor result=ourDataBase.rawQuery("SELECT Name FROM Recipes WHERE Name='"+recipeName+"'",null);
-       if(result.getCount()!=0)
+       Recipe recipe = db.getRecipe(recipeName);
+       if(recipe != null)
        {
            AlertDialog.Builder alert = new AlertDialog.Builder(this);
            alert.setTitle("שגיאה");
@@ -268,8 +313,7 @@ public class RecipeFormActivity extends ActionBarActivity {
            alert.show();
            return;
        }
-       result.close();
-       ourDataBase.close();
+
        if(ingredientsList.isEmpty())
        {
            AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -296,16 +340,19 @@ public class RecipeFormActivity extends ActionBarActivity {
        }
        String categoryFather=data.getExtras().getString("categoryFather");
        Recipe recipe=new Recipe(recipeName,ingredientsList,recipeInstructions,categoryFather,recipeIconId);
-       SQLiteDatabase ourDataBase=openOrCreateDatabase("ourDataBase",MODE_PRIVATE,null);
-       ourDataBase.execSQL("INSERT INTO Recipes(Name,Instructions,CategoryFather,IconId) VALUES('"+recipeName+"','"+recipeInstructions+"','"+categoryFather+"','"+recipeIconId+"')");
+       if(editMode)
+       {
+           db.deleteRecipeIngredients(recipeToEdit.getName());
+           db.deleteRecipe(recipeToEdit.getName());
+       }
+       db.insertRecipe(recipeName,recipeInstructions,categoryFather,recipeIconId);
        for(Ingredient ing:ingredientsList)
        {
            String ingName=ing.getName();
            double ingAmount=ing.getAmount();
            int ingUnit=ing.getUnitInt();
-           ourDataBase.execSQL("INSERT INTO Ingredients(Name,Amount,Unit,RecipeName) VALUES('"+ingName+"','"+ingAmount+"','"+ingUnit+"','"+recipeName+"')");
+           db.insertIngredient(ingName,ingAmount,ingUnit,recipeName);
        }
-       ourDataBase.close();
        finish();//TODO check where to return
 
    }
