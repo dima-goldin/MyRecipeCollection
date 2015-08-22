@@ -7,10 +7,14 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.ScreenUtils;
 
@@ -87,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.bar_menu, menu);
         return true;
     }
 
@@ -99,8 +103,49 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.menuAddCategory) {
+            LayoutInflater layoutInflater=(LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View popupView = layoutInflater.inflate(R.layout.addcategorypopup,null);
+            final PopupWindow popupWindow= new PopupWindow(popupView, Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+            Button cancelPopUpButton = (Button)popupView.findViewById(R.id.cancelPopUpButton);
+            cancelPopUpButton.setOnClickListener(new Button.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    popupWindow.dismiss();
+                }
+            });
+            popupWindow.setFocusable(true);
+            popupWindow.showAsDropDown(findViewById(R.id.headlineHebrew));
+            //popupWindow.showAtLocation(this.g, Gravity.CENTER,0,0);
+
+            Button submitButton=(Button)popupView.findViewById(R.id.popUpSubmitCategoryButton);
+            submitButton.setOnClickListener(new Button.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
+                                                    String newCategoryName = nameText.getText().toString();
+                                                    SQLiteDatabase ourDataBase = openOrCreateDatabase("ourDataBase", MODE_PRIVATE, null);
+                                                    ourDataBase.execSQL("INSERT INTO Categories (Name,IconId)VALUES('" + newCategoryName + "',-1)");//todo if user put image than insert real iconId
+                                                    ourDataBase.close();
+                                                    popupWindow.dismiss();
+
+
+                                                }
+
+                                            }
+
+
+            );
+
+        }
+        if(id==R.id.menuAddRecipe)
+        {
+            Intent intent = new Intent(this,RecipeFormActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.menuReturnToMainPage)
+        {
+            startActivity(new Intent(this,MainActivity.class));
         }
 
 

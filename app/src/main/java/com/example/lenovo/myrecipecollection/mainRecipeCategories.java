@@ -237,7 +237,7 @@ public class mainRecipeCategories extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_recipe_categories, menu);
+        getMenuInflater().inflate(R.menu.bar_menu, menu);
         return true;
     }
 
@@ -249,13 +249,11 @@ public class mainRecipeCategories extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        if(id==R.id.navigateBack){
+
+        if(id==R.id.menuReturnToMainPage){
             startActivity(new Intent(this,MainActivity.class));
         }
-        if(id==R.id.addCategory){
+        if(id==R.id.menuAddCategory){
         //opens popup to write name and pic
            LayoutInflater layoutInflater=(LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
             final View popupView = layoutInflater.inflate(R.layout.addcategorypopup,null);
@@ -268,7 +266,7 @@ public class mainRecipeCategories extends ActionBarActivity {
                 }
             });
             popupWindow.setFocusable(true);
-            popupWindow.showAsDropDown(findViewById(R.id.addCategory));
+            popupWindow.showAsDropDown(findViewById(R.id.myRecipesTitle));
            //popupWindow.showAtLocation(this.g, Gravity.CENTER,0,0);
 
             Button submitButton=(Button)popupView.findViewById(R.id.popUpSubmitCategoryButton);
@@ -296,17 +294,10 @@ public class mainRecipeCategories extends ActionBarActivity {
             );
 
         }
-        if(id==R.id.saveRecipe)
+        if(id==R.id.menuAddRecipe)
         {
-            if(saveFlag!=1)
-            {
-                return false;
-            }
-            saveFlag=0;
-            Intent returnIntent=new Intent();
-            returnIntent.putExtra("categoryFather",parentCategory);
-            setResult(RESULT_OK,returnIntent);
-            finish();
+            Intent intent = new Intent(this,RecipeFormActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
