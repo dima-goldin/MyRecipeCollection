@@ -67,7 +67,7 @@ public class mainRecipeCategories extends ActionBarActivity {
         if(getCallingActivity()!=null)
         {
             saveFlag=1;
-            //todo make save button visible
+
         }
 //        longClickOnCategoriesList();
         ListView listView=(ListView)findViewById(R.id.mainCategoriesListView);
