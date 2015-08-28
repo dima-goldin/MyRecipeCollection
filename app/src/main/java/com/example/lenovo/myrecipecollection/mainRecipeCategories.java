@@ -35,12 +35,18 @@ import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Stack;
 
 
 public class mainRecipeCategories extends ActionBarActivity {
 
+    public static final String WHERE_TO_SAVE = "איפה תרצו לשמור את המתכון?";
     private MySQLiteHelper db;
     private Point p=new Point(10,10);
     private Intent intent;
@@ -49,6 +55,8 @@ public class mainRecipeCategories extends ActionBarActivity {
     private ListView list;
 
     private String parentCategory=null;
+    Deque<String> categoryStack;
+    TextView textViewTitle;
 
   //  private android.support.v7.widget.Toolbar toolbar;
 
@@ -62,6 +70,8 @@ public class mainRecipeCategories extends ActionBarActivity {
         setContentView(R.layout.activity_main_recipe_categories_new);
 //todo make save button invisable
         db = new MySQLiteHelper(this);
+        categoryStack  = new ArrayDeque<String>();
+        textViewTitle = (TextView) findViewById(R.id.myRecipesTitle);
         populateMainListView();
 
 
@@ -93,15 +103,15 @@ public class mainRecipeCategories extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("categoryFather",parentCategory);
-                    setResult(RESULT_OK,returnIntent);
+                    returnIntent.putExtra("categoryFather", parentCategory);
+                    setResult(RESULT_OK, returnIntent);
                     finish();
                 }
             });
             layout.addView(button);
 
-            TextView textView = (TextView) findViewById(R.id.myRecipesTitle);
-            textView.setText("איפה תרצו לשמור את המתכון?");
+
+            textViewTitle.setText(WHERE_TO_SAVE);
         }
 
     }
@@ -132,19 +142,17 @@ public class mainRecipeCategories extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               TextView descriptionView = (TextView)view.findViewById(R.id.recipeOrCategoryId);
-                String description=descriptionView.getText().toString();
-                TextView nameView = (TextView)view.findViewById(R.id.categoryName);
-                String name=nameView.getText().toString();
-                if(description.equals("קטגוריה"))
-                {
+                TextView descriptionView = (TextView) view.findViewById(R.id.recipeOrCategoryId);
+                String description = descriptionView.getText().toString();
+                TextView nameView = (TextView) view.findViewById(R.id.categoryName);
+                String name = nameView.getText().toString();
+                if (description.equals("קטגוריה")) {
                     populateCategoriesList(name);
+                    categoryStack.push(name);
 
-                }
-                else if (description.equals("מתכון"))
-                {
-                    intent = new Intent(getApplicationContext(),recipeActivity.class);
-                    Bundle bundle=new Bundle();
+                } else if (description.equals("מתכון")) {
+                    intent = new Intent(getApplicationContext(), recipeActivity.class);
+                    Bundle bundle = new Bundle();
                     bundle.putString("key", name);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -225,6 +233,23 @@ public class mainRecipeCategories extends ActionBarActivity {
                 mainCategoriesList.add(new Category(name,iconId,father,"מתכון"));
 
             }
+        }
+        String currentCategory = parent;
+        if(currentCategory == null &&textViewTitle.getText().toString().startsWith(WHERE_TO_SAVE))
+        {
+            textViewTitle.setText(WHERE_TO_SAVE);
+        }
+        else if(currentCategory == null)
+        {
+            textViewTitle.setText("המתכונים שלי");
+        }
+        else if(textViewTitle.getText().toString().startsWith(WHERE_TO_SAVE))
+        {
+            textViewTitle.setText(WHERE_TO_SAVE + " קטגוריה: " + currentCategory) ;
+        }
+        else
+        {
+            textViewTitle.setText("המתכונים שלי " + " קטגוריה: " + currentCategory) ;
         }
         adapter.notifyDataSetChanged();
         parentCategory=parent;
@@ -379,7 +404,36 @@ public class mainRecipeCategories extends ActionBarActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if(categoryStack.isEmpty())
+        {
+           if(saveMode())
+           {
+               //notify not saved
+               //finish();
+               super.onBackPressed();
+           }
+            else
+           {
+               finish();
+               //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+               //startActivity(intent);
 
+           }
+        }
+        else
+        {
+            categoryStack.pop();
+            populateCategoriesList(categoryStack.peek());
+        }
+
+    }
+
+    private boolean saveMode() {
+        return saveFlag == 1;
+    }
 }
 
 

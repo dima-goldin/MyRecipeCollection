@@ -305,7 +305,7 @@ public class RecipeFormActivity extends ActionBarActivity {
        }
 
        Recipe recipe = db.getRecipe(recipeName);
-       if(recipe != null)
+       if(recipe != null && !editMode)
        {
            AlertDialog.Builder alert = new AlertDialog.Builder(this);
            alert.setTitle("שגיאה");
@@ -334,6 +334,11 @@ public class RecipeFormActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode,int resultCode,Intent data)
    {
        super.onActivityResult(requestCode,resultCode,data);
+
+       if(data == null)
+       {
+           return;
+       }
        if(!data.getExtras().containsKey("categoryFather"))
        {
            finish();
@@ -353,6 +358,8 @@ public class RecipeFormActivity extends ActionBarActivity {
            int ingUnit=ing.getUnitInt();
            db.insertIngredient(ingName,ingAmount,ingUnit,recipeName);
        }
+       Intent intent = new Intent(this, MainActivity.class);
+       startActivity(intent);
        finish();//TODO check where to return
 
    }

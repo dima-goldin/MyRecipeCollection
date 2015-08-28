@@ -37,12 +37,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private static boolean dataBaseExists(ContextWrapper context,String dbName)
-    {
-        File dbFile= context.getDatabasePath(dbName);
-        return dbFile.exists();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
