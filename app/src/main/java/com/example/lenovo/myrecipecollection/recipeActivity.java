@@ -3,6 +3,7 @@ package com.example.lenovo.myrecipecollection;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.util.ArrayList;
@@ -37,10 +39,10 @@ public class recipeActivity extends ActionBarActivity {
 
     private void showRecipe(String recipeName) {
         Recipe recipe = db.getRecipe(recipeName);
-        fillRecipe(recipeName, recipe.getInstructions(), recipe.getIconID(), recipe.getIngredientList(), recipe.getParent());
+        fillRecipe(recipeName, recipe.getInstructions(), recipe.getPicture(), recipe.getIngredientList(), recipe.getParent());
     }
 
-    private void fillRecipe(String name,String instructions,int iconId,List<Ingredient> ingredientList,String father)
+    private void fillRecipe(String name,String instructions,Bitmap picture,List<Ingredient> ingredientList,String father)
     {
         TextView nameView= (TextView) findViewById(R.id.showRecipeNameTitle);
         nameView.setText(name);
@@ -48,7 +50,7 @@ public class recipeActivity extends ActionBarActivity {
         TextView instructionsView=(TextView)findViewById(R.id.showInstructions);
         instructionsView.setText(instructions);
         ImageView iconView=(ImageView)findViewById(R.id.showIcon);
-        iconView.setImageResource(iconId);
+        iconView.setImageBitmap(picture);
         String ingsString=new String();
         for(Ingredient ing:ingredientList)
         {
@@ -96,7 +98,8 @@ public class recipeActivity extends ActionBarActivity {
                                                 public void onClick(View v) {
                                                     EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
                                                     String newCategoryName = nameText.getText().toString();
-                                                    db.insertCategory(newCategoryName,null,-1);
+                                                    Bitmap picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));
+                                                    db.insertCategory(newCategoryName,null,picture);
                                                     popupWindow.dismiss();
 
 

@@ -1,17 +1,21 @@
 package com.example.lenovo.myrecipecollection;
 
 
+import android.graphics.Bitmap;
+
+import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
+
 public class Category {
 
     protected String name;
-    protected Integer iconID;
+    protected Bitmap picture;
     protected String parent;
     protected String description;
 
 
-    public Category(String name, Integer iconID, String parent,String description) {
+    public Category(String name, Bitmap bitmap, String parent,String description) {
         this.name = name;
-        this.iconID = iconID;
+        this.picture = bitmap;
         this.parent = parent;
         this.description=description;
 
@@ -24,12 +28,12 @@ public class Category {
         this.parent = parent;
     }
 
-    public Integer getIconID() {
-        return iconID;
+    public Bitmap getPicture() {
+        return picture;
     }
 
-    public void setIconID(Integer iconID) {
-        this.iconID = iconID;
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
     }
 
     public String getName() {
@@ -47,5 +51,7 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 
 }

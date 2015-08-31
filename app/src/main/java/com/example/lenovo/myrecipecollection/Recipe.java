@@ -1,5 +1,7 @@
 package com.example.lenovo.myrecipecollection;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**
@@ -9,9 +11,9 @@ public class Recipe extends Category {
     private List<Ingredient> ingredientList;
     private String instructions;
 
-    public Recipe(String name, List<Ingredient> ingredientList, String instructions,String parentCategory,int iconId) {
+    public Recipe(String name, List<Ingredient> ingredientList, String instructions,String parentCategory,Bitmap picture) {
 
-        super(name,iconId,parentCategory,"מתכון");
+        super(name,picture,parentCategory,"מתכון");
         this.ingredientList = ingredientList;
         this.instructions = instructions;
 

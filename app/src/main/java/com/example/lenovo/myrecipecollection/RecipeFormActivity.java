@@ -29,6 +29,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.io.FileNotFoundException;
@@ -50,7 +51,7 @@ public class RecipeFormActivity extends ActionBarActivity {
 
     private String recipeName=null;
     private String recipeInstructions=null;
-    private int recipeIconId=0;
+    private Bitmap picture;
     Recipe recipeToEdit;
     Boolean editMode = false;
 
@@ -99,6 +100,7 @@ public class RecipeFormActivity extends ActionBarActivity {
         //TODO
         EditText title = (EditText) findViewById(R.id.editRecipeName);
         EditText instructions = (EditText) findViewById(R.id.editInstructions);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
 
         title.setText(recipeToEdit.getName());
         ingredientsList.addAll(recipeToEdit.getIngredientList());
@@ -107,7 +109,8 @@ public class RecipeFormActivity extends ActionBarActivity {
             ingStringList.add(ingredient.toString());
         }
         instructions.setText(recipeToEdit.getInstructions());
-
+        Bitmap bitMap = recipeToEdit.getPicture();
+        imageButton.setImageBitmap(bitMap);
     }
 
     private boolean checkForEditMode(RecipeFormActivity recipeFormActivity) {
@@ -194,7 +197,9 @@ public class RecipeFormActivity extends ActionBarActivity {
                                                 public void onClick(View v) {
                                                     EditText nameText = (EditText) popupView.findViewById(R.id.editPopUpCategoryName);
                                                     String newCategoryName = nameText.getText().toString();
-                                                    db.insertCategory(newCategoryName,null,-1);
+                                                    //TODO this is only temporary, i need to get the bitmap from gallery/camera and turn into a bitmap
+                                                    Bitmap picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));
+                                                    db.insertCategory(newCategoryName,null,picture);
                                                     popupWindow.dismiss();
 
 
@@ -293,7 +298,7 @@ public class RecipeFormActivity extends ActionBarActivity {
        recipeName = editRecipeName.getText().toString();
        EditText editInstructions = (EditText)findViewById(R.id.editInstructions);
        recipeInstructions = editInstructions.getText().toString();
-       recipeIconId=0;//change to get real picture id TODO
+       picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));//TODO change to get real picture
 
        if(recipeName==null|| recipeName.equals(""))
        {
@@ -344,13 +349,13 @@ public class RecipeFormActivity extends ActionBarActivity {
            finish();
        }
        String categoryFather=data.getExtras().getString("categoryFather");
-       Recipe recipe=new Recipe(recipeName,ingredientsList,recipeInstructions,categoryFather,recipeIconId);
+       Recipe recipe=new Recipe(recipeName,ingredientsList,recipeInstructions,categoryFather,picture);
        if(editMode)
        {
            db.deleteRecipeIngredients(recipeToEdit.getName());
            db.deleteRecipe(recipeToEdit.getName());
        }
-       db.insertRecipe(recipeName,recipeInstructions,categoryFather,recipeIconId);
+       db.insertRecipe(recipeName,recipeInstructions,categoryFather,picture);
        for(Ingredient ing:ingredientsList)
        {
            String ingName=ing.getName();

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.ActionBarActivity;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.util.ArrayDeque;
@@ -179,13 +181,13 @@ public class mainRecipeCategories extends ActionBarActivity {
             Category currentCategory = mainCategoriesList.get(position);
             //Fill the view
             ImageView imageView = (ImageView) itemView.findViewById(R.id.CategoryIcon);
-            if(currentCategory.getIconID()==-1)
+            if(currentCategory.getPicture()==null)
             {
                 imageView.setVisibility(View.INVISIBLE);
             }
-            if(currentCategory.getIconID()!=-1)
+            else
             {
-                imageView.setImageResource(currentCategory.getIconID());
+                imageView.setImageBitmap(currentCategory.getPicture());
             }
 
             //make
@@ -198,12 +200,12 @@ public class mainRecipeCategories extends ActionBarActivity {
     }
 
 
-    private void addNewCategory(String categoryName,int iconId)
-    {
-        Category newCategory= new Category(categoryName,iconId,parentCategory,"קטגוריה");
-        //add this category to database
-        populateCategoriesList(parentCategory);
-    }
+//    private void addNewCategory(String categoryName,Bitmap iconId)
+//    {
+//        Category newCategory= new Category(categoryName,iconId,parentCategory,"קטגוריה");
+//        //add this category to database
+//        populateCategoriesList(parentCategory);
+//    }
 
     private void populateCategoriesList(String parent)
     {
@@ -229,8 +231,8 @@ public class mainRecipeCategories extends ActionBarActivity {
             {
                 String name=recipe.getName();
                 String father=recipe.getParent();
-                int iconId=recipe.getIconID();
-                mainCategoriesList.add(new Category(name,iconId,father,"מתכון"));
+                Bitmap picture=recipe.getPicture();
+                mainCategoriesList.add(new Category(name,picture,father,"מתכון"));
 
             }
         }
@@ -297,13 +299,17 @@ public class mainRecipeCategories extends ActionBarActivity {
                    public void onClick(View v){
                    EditText nameText= (EditText)popupView.findViewById(R.id.editPopUpCategoryName);
                    String newCategoryName=nameText.getText().toString();
+
+                   //TODO this is only temporary, i need to get the bitmap from gallery/camera and turn into a bitmap
+                   Bitmap picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));
                    if(parentCategory==null)
                    {
-                       db.insertCategory(newCategoryName,null,-1);
+
+                       db.insertCategory(newCategoryName,null,picture);
                    }
                    else
                    {
-                       db.insertCategory(newCategoryName,parentCategory,-1);
+                       db.insertCategory(newCategoryName,parentCategory,picture);
                    }
                    popupWindow.dismiss();
                    populateCategoriesList(parentCategory);

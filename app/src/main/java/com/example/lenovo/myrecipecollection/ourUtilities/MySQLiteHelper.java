@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.lenovo.myrecipecollection.Category;
@@ -17,13 +18,13 @@ import java.util.ArrayList;
 public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String TAG = "DB";
     public static final String DATABASE_NAME = "ourDataBase";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String TABLE_CATEGORIES = "Categories";
     public static final String TABLE_INGREDIENTS = "Ingredients";
     public static final String TABLE_RECIPES = "Recipes";
     public static final String CAT_COL_NAME = "Name";
     public static final String CAT_COL_CATEGORY_FATHER = "CategoryFather";
-    public static final String CAT_COL_ICON_ID = "IconId";
+    public static final String CAT_COL_PICTURE = "picture";
     public static final String ING_COL_ID = "ID";
     public static final String ING_COL_NAME = "Name";
     public static final String ING_COL_AMOUNT = "Amount";
@@ -32,7 +33,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String RECIPE_COL_NAME = "Name";
     public static final String RECIPE_COL_INSTRUCTIONS = "Instructions";
     public static final String RECIPE_COL_CATEGORY_FATHER = "CategoryFather";
-    public static final String RECIPE_COL_ICON_ID = "IconId";
+    public static final String RECIPE_COL_PICTURE = "picture";
 
 
 
@@ -44,8 +45,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG,"onCreate");
-        String statmentCreateTableCategories = "CREATE TABLE "+TABLE_CATEGORIES + "(" + CAT_COL_NAME + " text not null primary key, " + CAT_COL_CATEGORY_FATHER + " text," + CAT_COL_ICON_ID + " integer);";
-        String statmentCreateTableRecipes = "CREATE TABLE " + TABLE_RECIPES + " (" + RECIPE_COL_NAME + " text not null primary key, " + RECIPE_COL_INSTRUCTIONS + " text, " + RECIPE_COL_CATEGORY_FATHER + ", " + RECIPE_COL_ICON_ID  + " integer);";
+        String statmentCreateTableCategories = "CREATE TABLE "+TABLE_CATEGORIES + "(" + CAT_COL_NAME + " text not null primary key, " + CAT_COL_CATEGORY_FATHER + " text," + CAT_COL_PICTURE + " text);";
+        String statmentCreateTableRecipes = "CREATE TABLE " + TABLE_RECIPES + " (" + RECIPE_COL_NAME + " text not null primary key, " + RECIPE_COL_INSTRUCTIONS + " text, " + RECIPE_COL_CATEGORY_FATHER + ", " + RECIPE_COL_PICTURE  + " text);";
         String statmentCreateTableIngredients = "CREATE TABLE " + TABLE_INGREDIENTS + " (" + ING_COL_ID + " integer not null primary key autoincrement, " + ING_COL_NAME + " text not null, " + ING_COL_AMOUNT + " double, " + ING_COL_UNIT + " integer, " + ING_COL_RECIPE_NAME + " text not null);";
         db.execSQL(statmentCreateTableCategories);
         db.execSQL(statmentCreateTableRecipes);
@@ -58,18 +59,20 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Log.d(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES + ", " + TABLE_INGREDIENTS + ", " + TABLE_RECIPES + ";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES+ ";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INGREDIENTS + ";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES + ";");
         onCreate(db);
     }
 
-    public long insertCategory(String name, String categoryFather, int iconId)
+    public long insertCategory(String name, String categoryFather, Bitmap picture)
     {
         Log.d(TAG, "insertCategory Name: " + name);
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CAT_COL_NAME, name);
         values.put(CAT_COL_CATEGORY_FATHER,categoryFather);
-        values.put(CAT_COL_ICON_ID, iconId);
+        values.put(CAT_COL_PICTURE, BitmapUtils.BitMapToString(picture));
         long id = db.insertOrThrow(TABLE_CATEGORIES, null, values);
         return id;
 
@@ -89,7 +92,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             return null;
         }
         cursor.moveToFirst();
-        Category category = new Category(cursor.getString(0),cursor.getInt(2),cursor.getString(1),"");
+        Category category = new Category(cursor.getString(0),BitmapUtils.StringToBitMap(cursor.getString(2)),cursor.getString(1),"");
         return category;
     }
 
@@ -118,7 +121,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         while(cursor.moveToNext())
         {
-            Category category = new Category(cursor.getString(0),cursor.getInt(2),cursor.getString(1),"");
+            Category category = new Category(cursor.getString(0),BitmapUtils.StringToBitMap(cursor.getString(2)),cursor.getString(1),"");
             list.add(category);
         }
         cursor.close();
@@ -183,7 +186,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-    public long insertRecipe(String name, String instructions, String categoryFather, int iconId)
+    public long insertRecipe(String name, String instructions, String categoryFather, Bitmap picture)
     {
         Log.d(TAG, "insertRecipe Name: " + name);
         SQLiteDatabase db = getWritableDatabase();
@@ -191,7 +194,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(RECIPE_COL_NAME, name);
         values.put(RECIPE_COL_INSTRUCTIONS,instructions);
         values.put(RECIPE_COL_CATEGORY_FATHER, categoryFather);
-        values.put(RECIPE_COL_ICON_ID, iconId);
+        values.put(RECIPE_COL_PICTURE, BitmapUtils.BitMapToString(picture));
         long id = db.insertOrThrow(TABLE_RECIPES, null, values);
         return id;
 
@@ -212,7 +215,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             return null;
         }
         cursor.moveToFirst();
-        Recipe recipe = new Recipe(name, null,cursor.getString(1), cursor.getString(2),cursor.getInt(3));
+        Recipe recipe = new Recipe(name, null,cursor.getString(1), cursor.getString(2),BitmapUtils.StringToBitMap(cursor.getString(3)));
         cursor.close();
         ArrayList<Ingredient> list = getRecipeIngredients(name);
         recipe.setIngredientList(list);
