@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String TAG = "DB";
     public static final String DATABASE_NAME = "ourDataBase";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 6;
     public static final String TABLE_CATEGORIES = "Categories";
     public static final String TABLE_INGREDIENTS = "Ingredients";
     public static final String TABLE_RECIPES = "Recipes";
@@ -71,7 +71,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CAT_COL_NAME, name);
-        values.put(CAT_COL_CATEGORY_FATHER,categoryFather);
+        values.put(CAT_COL_CATEGORY_FATHER, categoryFather);
         values.put(CAT_COL_PICTURE, BitmapUtils.BitMapToString(picture));
         long id = db.insertOrThrow(TABLE_CATEGORIES, null, values);
         return id;
@@ -182,7 +182,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
 
-        db.delete(TABLE_CATEGORIES, RECIPE_COL_NAME + " = ?",new String[] {recipeName});
+        db.delete(TABLE_INGREDIENTS, ING_COL_RECIPE_NAME + " = ?",new String[] {recipeName});
     }
 
 
@@ -194,6 +194,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(RECIPE_COL_NAME, name);
         values.put(RECIPE_COL_INSTRUCTIONS,instructions);
         values.put(RECIPE_COL_CATEGORY_FATHER, categoryFather);
+        new FreeMemory().run();
         values.put(RECIPE_COL_PICTURE, BitmapUtils.BitMapToString(picture));
         long id = db.insertOrThrow(TABLE_RECIPES, null, values);
         return id;
@@ -229,8 +230,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
 
-        String statment = "SELECT * FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + "='" + categoryFather + "';";
-        String altStatment = "SELECT * FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + " IS NULL;";
+        String statment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + "='" + categoryFather + "';";
+        String altStatment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + " IS NULL;";
 
         Cursor cursor;
         if(categoryFather == null)
@@ -270,6 +271,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         db.delete(TABLE_RECIPES, RECIPE_COL_NAME + " = ?",new String[] {name});
+    }
+
+    public String getDatabaseLocation()
+    {
+        String path = getReadableDatabase().getPath();
+        Log.d(TAG,"Path to db is: "+path);
+        Log.d(TAG,"Path to db is: "+path);
+        Log.d(TAG,"Path to db is: "+path);
+        Log.d(TAG,"Path to db is: "+path);
+        Log.d(TAG,"Path to db is: "+path);
+        Log.d(TAG,"Path to db is: "+path);
+
+        return path;
     }
 
 }

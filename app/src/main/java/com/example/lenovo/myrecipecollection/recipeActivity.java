@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -26,12 +27,19 @@ import java.util.List;
 
 public class recipeActivity extends ActionBarActivity {
     MySQLiteHelper db;
+    TextView instructionsView;
+    ImageButton iconView;
+    TextView ingsView;
+    Boolean enlarged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         db = new MySQLiteHelper(this);
+        instructionsView=(TextView)findViewById(R.id.showInstructions);
+        iconView=(ImageButton)findViewById(R.id.showIcon);
+        ingsView=(TextView)findViewById(R.id.showIngs);
         String recipeName=getIntent().getExtras().getString("key");
         showRecipe(recipeName);
 
@@ -47,16 +55,13 @@ public class recipeActivity extends ActionBarActivity {
         TextView nameView= (TextView) findViewById(R.id.showRecipeNameTitle);
         nameView.setText(name);
 
-        TextView instructionsView=(TextView)findViewById(R.id.showInstructions);
         instructionsView.setText(instructions);
-        ImageView iconView=(ImageView)findViewById(R.id.showIcon);
         iconView.setImageBitmap(picture);
         String ingsString=new String();
         for(Ingredient ing:ingredientList)
         {
             ingsString=ingsString+ing.toString()+"\n";
         }
-        TextView ingsView=(TextView)findViewById(R.id.showIngs);
         ingsView.setText(ingsString);
     }
 
@@ -124,5 +129,31 @@ public class recipeActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    public void enlargePic(View view)
+    {
+        if(enlarged)
+        {
+            //make smaller
+            iconView.setMaxHeight(100);
+            iconView.setMinimumHeight(100);
+            iconView.setMaxWidth(100);
+            iconView.setMinimumWidth(100);
+            iconView.getLayoutParams().height -= 412;
+            iconView.getLayoutParams().width -= 412;
+            enlarged = false;
+        }
+        else
+        {
+            //make larger
+            iconView.setMaxHeight(512);
+            iconView.setMinimumHeight(512);
+            iconView.setMaxWidth(512);
+            iconView.setMinimumWidth(512);
+            iconView.getLayoutParams().height += 412;
+            iconView.getLayoutParams().width += 412;
+            enlarged = true;
+        }
     }
 }

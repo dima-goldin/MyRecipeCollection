@@ -2,11 +2,16 @@ package com.example.lenovo.myrecipecollection;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.EntityIterator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
@@ -27,21 +32,28 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
+import com.example.lenovo.myrecipecollection.ourUtilities.ExifUtil;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class RecipeFormActivity extends ActionBarActivity {
     public static final int GET_FROM_GALLERY = 3;
     public static final String SAVEING_RECIPE = "SAVING_RECIPE";
+    public static final int SAVE_RECIPE_REQUEST = 1;
 
 
     MySQLiteHelper db;
+    private static final int PICK_IMAGE_REQUEST_CODE = 100;
+    private static final int CAMERA_REQUEST_CODE = 120;
     public int RESULT_LOAD_IMAGE;
     private ArrayList<String> ingStringList;
     private ArrayAdapter<String> arrayAdapterIngStringList;
@@ -54,6 +66,7 @@ public class RecipeFormActivity extends ActionBarActivity {
     private Bitmap picture;
     Recipe recipeToEdit;
     Boolean editMode = false;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +94,7 @@ public class RecipeFormActivity extends ActionBarActivity {
         });
         registerForContextMenu(lv);
         Spinner spinnerUnit= (Spinner)findViewById(R.id.unitSpinner);
-       unitList= new ArrayList<String>();
+        unitList= new ArrayList<String>();
         arrayAdapterUnitList=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,unitList);
         arrayAdapterUnitList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUnit.setAdapter((arrayAdapterUnitList));
@@ -94,6 +107,36 @@ public class RecipeFormActivity extends ActionBarActivity {
         {
             editRecipe(recipeToEdit);
         }
+
+
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
+    }
+
+    public void setRecipeImage(View view)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+        alert.setTitle("בחירת תמונה למתכון");
+        alert.setMessage("מאיפה תרצו לבחור את התמונה?");
+        alert.setPositiveButton("מגלרית התמונות", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                // Show only images, no videos or anything else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                // Always show the chooser (if there are multiple options available)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST_CODE);
+            }
+        });
+        alert.setNegativeButton("מהמצלמה", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+            }
+        });
+
+        alert.show();
     }
 
     private void editRecipe(Recipe recipeToEdit) {
@@ -109,8 +152,8 @@ public class RecipeFormActivity extends ActionBarActivity {
             ingStringList.add(ingredient.toString());
         }
         instructions.setText(recipeToEdit.getInstructions());
-        Bitmap bitMap = recipeToEdit.getPicture();
-        imageButton.setImageBitmap(bitMap);
+        picture = recipeToEdit.getPicture();
+        imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(picture, 100, 100));
     }
 
     private boolean checkForEditMode(RecipeFormActivity recipeFormActivity) {
@@ -217,7 +260,7 @@ public class RecipeFormActivity extends ActionBarActivity {
         }
         if(id==R.id.menuReturnToMainPage)
         {
-            startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
         }
 
 
@@ -228,42 +271,42 @@ public class RecipeFormActivity extends ActionBarActivity {
 
 
 
-     public void addIngToIngList(View v)
-     {
-         EditText amountText=(EditText)findViewById(R.id.amountEdit);
-         String amountInput=amountText.getText().toString().trim();
-         EditText nameText=(EditText)findViewById(R.id.IngNameEdit);
-         String nameInput=nameText.getText().toString().trim();
-         Spinner spinnerUnit=(Spinner)findViewById(R.id.unitSpinner);
-         String unitInput=spinnerUnit.getSelectedItem().toString();
-         Unit unit = Unit.EMPTY;
-         for (Unit u:Unit.values()) {
-             if(u.toString()==unitInput)
-             {
+    public void addIngToIngList(View v)
+    {
+        EditText amountText=(EditText)findViewById(R.id.amountEdit);
+        String amountInput=amountText.getText().toString().trim();
+        EditText nameText=(EditText)findViewById(R.id.IngNameEdit);
+        String nameInput=nameText.getText().toString().trim();
+        Spinner spinnerUnit=(Spinner)findViewById(R.id.unitSpinner);
+        String unitInput=spinnerUnit.getSelectedItem().toString();
+        Unit unit = Unit.EMPTY;
+        for (Unit u:Unit.values()) {
+            if(u.toString()==unitInput)
+            {
                 unit.setFieldDescription(unitInput);
-             }
-         }
-         if(nameInput.isEmpty()){
+            }
+        }
+        if(nameInput.isEmpty()){
             return;
-             //todo show error to user that name is empty
-         }
-         if(amountInput.isEmpty()){
-             Ingredient ingredient= new Ingredient(0,unit,nameInput);
-             ingredientsList.add(ingredient);
-             arrayAdapterIngStringList.add(ingredient.toString());
+            //todo show error to user that name is empty
+        }
+        if(amountInput.isEmpty()){
+            Ingredient ingredient= new Ingredient(0,unit,nameInput);
+            ingredientsList.add(ingredient);
+            arrayAdapterIngStringList.add(ingredient.toString());
 
-         }
+        }
 
         else {
-             Ingredient ingredient = new Ingredient(Double.parseDouble(amountInput),unit, nameInput);
-             arrayAdapterIngStringList.add(ingredient.toString());
+            Ingredient ingredient = new Ingredient(Double.parseDouble(amountInput),unit, nameInput);
+            arrayAdapterIngStringList.add(ingredient.toString());
             ingredientsList.add(ingredient);
 
-         }
+        }
         amountText.setText("");
         nameText.setText("");
 
-     }
+    }
     public void choosePicForRecipe(View v)
     {
         Intent i = new Intent(
@@ -272,102 +315,113 @@ public class RecipeFormActivity extends ActionBarActivity {
         startActivityForResult(i, RESULT_LOAD_IMAGE);
     }
 
-//    @Override// TODO what to do if we already have an "onActivityResult"?
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-//            Uri selectedImage = data.getData();
-//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//
-//            Cursor cursor = getContentResolver().query(selectedImage,
-//                    filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//
-//            // String picturePath contains the path of selected Image
-//        }}
-   public void createAndSaveNewRecipe(View v)
-   {
+    public void createAndSaveNewRecipe(View v)
+    {
 
 
-       EditText editRecipeName =(EditText)findViewById(R.id.editRecipeName);
-       recipeName = editRecipeName.getText().toString();
-       EditText editInstructions = (EditText)findViewById(R.id.editInstructions);
-       recipeInstructions = editInstructions.getText().toString();
-       picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));//TODO change to get real picture
-
-       if(recipeName==null|| recipeName.equals(""))
-       {
-           AlertDialog.Builder alert = new AlertDialog.Builder(this);
-           alert.setTitle("שגיאה");
-           alert.setMessage("לא הוגדר שם מתכון!");
-           alert.show();
-           return;
-       }
-
-       Recipe recipe = db.getRecipe(recipeName);
-       if(recipe != null && !editMode)
-       {
-           AlertDialog.Builder alert = new AlertDialog.Builder(this);
-           alert.setTitle("שגיאה");
-           alert.setMessage("שם מתכון כבר קיים במערכת");
-           alert.show();
-           return;
-       }
-
-       if(ingredientsList.isEmpty())
-       {
-           AlertDialog.Builder alert = new AlertDialog.Builder(this);
-           alert.setTitle("שגיאה");
-           alert.setMessage("לא הוכנס אף מצרך!");
-           alert.show();
-
-           return;
-       }
+        EditText editRecipeName =(EditText)findViewById(R.id.editRecipeName);
+        recipeName = editRecipeName.getText().toString();
+        EditText editInstructions = (EditText)findViewById(R.id.editInstructions);
+        recipeInstructions = editInstructions.getText().toString();
+        if(picture == null)
+        {
+            picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));//TODO change to get real picture
+        }
 
 
-       Intent intent=new Intent(getApplicationContext(),mainRecipeCategories.class);
-       intent.putExtra(SAVEING_RECIPE,SAVEING_RECIPE);
-       startActivityForResult(intent,1);
+        if(recipeName==null|| recipeName.equals(""))
+        {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("שגיאה");
+            alert.setMessage("לא הוגדר שם מתכון!");
+            alert.show();
+            return;
+        }
 
-   }
-   @Override
+        Recipe recipe = db.getRecipe(recipeName);
+        if(recipe != null && !editMode)
+        {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("שגיאה");
+            alert.setMessage("שם מתכון כבר קיים במערכת");
+            alert.show();
+            return;
+        }
+
+        if(ingredientsList.isEmpty())
+        {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("שגיאה");
+            alert.setMessage("לא הוכנס אף מצרך!");
+            alert.show();
+
+            return;
+        }
+
+
+        Intent intent=new Intent(getApplicationContext(),mainRecipeCategories.class);
+        intent.putExtra(SAVEING_RECIPE,SAVEING_RECIPE);
+        startActivityForResult(intent, SAVE_RECIPE_REQUEST);
+
+    }
+    @Override
     protected void onActivityResult(int requestCode,int resultCode,Intent data)
-   {
-       super.onActivityResult(requestCode,resultCode,data);
+    {
+        super.onActivityResult(requestCode,resultCode,data);
 
-       if(data == null)
-       {
-           return;
-       }
-       if(!data.getExtras().containsKey("categoryFather"))
-       {
-           finish();
-       }
-       String categoryFather=data.getExtras().getString("categoryFather");
-       Recipe recipe=new Recipe(recipeName,ingredientsList,recipeInstructions,categoryFather,picture);
-       if(editMode)
-       {
-           db.deleteRecipeIngredients(recipeToEdit.getName());
-           db.deleteRecipe(recipeToEdit.getName());
-       }
-       db.insertRecipe(recipeName,recipeInstructions,categoryFather,picture);
-       for(Ingredient ing:ingredientsList)
-       {
-           String ingName=ing.getName();
-           double ingAmount=ing.getAmount();
-           int ingUnit=ing.getUnitInt();
-           db.insertIngredient(ingName,ingAmount,ingUnit,recipeName);
-       }
-       Intent intent = new Intent(this, MainActivity.class);
-       startActivity(intent);
-       finish();//TODO check where to return
+        if(data == null)
+        {
+            return;
+        }
+        if(data != null && requestCode == PICK_IMAGE_REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            Uri uri = data.getData();
+            Bitmap bitmap;
+            try {
+                MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                bitmap = Bitmap.createScaledBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), uri), 512, 512, false);
+                // Log.d(TAG, String.valueOf(bitmap));
+                picture = bitmap;
+                imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(picture, 100, 100));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        if (data != null && requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
 
-   }
+            Bitmap pictureObject = Bitmap.createScaledBitmap((Bitmap) data.getExtras().get("data"),512,512,false);
+            picture = pictureObject;
+            imageButton.setImageBitmap(ThumbnailUtils.extractThumbnail(picture, 100, 100));
+            return;
+        }
+        if(data != null  && requestCode == SAVE_RECIPE_REQUEST && resultCode == RESULT_OK && data.getExtras().containsKey("categoryFather"))
+        {
+
+            String categoryFather=data.getExtras().getString("categoryFather");
+            //Recipe recipe=new Recipe(recipeName,ingredientsList,recipeInstructions,categoryFather,picture);
+            if(editMode)
+            {
+                db.deleteRecipeIngredients(recipeToEdit.getName());
+                db.deleteRecipe(recipeToEdit.getName());
+            }
+            db.insertRecipe(recipeName,recipeInstructions,categoryFather,picture);
+            for(Ingredient ing:ingredientsList)
+            {
+                String ingName=ing.getName();
+                double ingAmount=ing.getAmount();
+                int ingUnit=ing.getUnitInt();
+                db.insertIngredient(ingName,ingAmount,ingUnit,recipeName);
+            }
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();//TODO check where to return
+        }
+
+
+
+
+    }
 
 
 

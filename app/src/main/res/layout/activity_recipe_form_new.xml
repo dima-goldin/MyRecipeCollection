@@ -20,8 +20,8 @@
                 android:layout_height="wrap_content">
 
                 <ImageButton
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:id="@+id/imageButton"
                     android:layout_marginLeft="15dp"
                     android:layout_alignBottom="@+id/editRecipeName"
@@ -29,7 +29,9 @@
                     android:adjustViewBounds="true"
                     android:maxHeight="100dp"
                     android:maxWidth="100dp"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitXY"
+                    android:onClick="setRecipeImage"
+                    android:src="@drawable/notavaliable" />
 
                 <TextView
                     android:layout_width="wrap_content"
