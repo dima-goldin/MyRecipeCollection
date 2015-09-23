@@ -38,6 +38,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
+import com.example.lenovo.myrecipecollection.ourUtilities.MyDatabase;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.io.IOException;
@@ -53,7 +54,9 @@ import java.util.Stack;
 public class mainRecipeCategories extends ActionBarActivity {
 
     public static final String WHERE_TO_SAVE = "איפה תרצו לשמור את המתכון?";
+    public static final String CURRENT_CATEGORY_INDEX = "currentCategoryIndex";
     private MySQLiteHelper db;
+    //private MyDatabase db;
     private Point p=new Point(10,10);
     private Intent intent;
 
@@ -78,8 +81,10 @@ public class mainRecipeCategories extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recipe_categories_new);
 //todo make save button invisable
+        //db = new MyDatabase(this);
         db = new MySQLiteHelper(this);
-        String dbLocation = db.getDatabaseLocation();
+
+        //String dbLocation = db.getDatabaseLocation();
 
         categoryStack  = new ArrayDeque<String>();
         textViewTitle = (TextView) findViewById(R.id.myRecipesTitle);
@@ -137,7 +142,7 @@ public class mainRecipeCategories extends ActionBarActivity {
 
     private void populateMainListView() {
         adapter=new MyMainCategoryListAdapter();
-         list= (ListView) findViewById(R.id.mainCategoriesListView);
+        list= (ListView) findViewById(R.id.mainCategoriesListView);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -185,6 +190,7 @@ public class mainRecipeCategories extends ActionBarActivity {
             }
             else
             {
+                imageView.setVisibility(View.VISIBLE);
                 imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(currentCategory.getPicture(), 100, 100));
             }
 
@@ -231,7 +237,7 @@ public class mainRecipeCategories extends ActionBarActivity {
                 String name=recipe.getName();
                 String father=recipe.getParent();
                 Bitmap picture=recipe.getPicture();
-                mainCategoriesList.add(new Category(name,picture,father,"מתכון"));
+                mainCategoriesList.add(new Category(name,ThumbnailUtils.extractThumbnail(picture, 100, 100),father,"מתכון"));
 
             }
         }
@@ -361,19 +367,22 @@ public class mainRecipeCategories extends ActionBarActivity {
                 alert.setPositiveButton("מגלרית התמונות", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
+                        Intent galleryIntent = new Intent();
                         // Show only images, no videos or anything else
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        galleryIntent.setType("image/*");
+                        galleryIntent.putExtra(CURRENT_CATEGORY_INDEX,currentCategoryIndex);
+                        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                         // Always show the chooser (if there are multiple options available)
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST_CODE);
+                        startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), PICK_IMAGE_REQUEST_CODE);
                     }
                 });
                 alert.setNegativeButton("מהמצלמה", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        cameraIntent.putExtra(CURRENT_CATEGORY_INDEX,currentCategoryIndex);
                         startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+
                     }
                 });
 
@@ -476,14 +485,21 @@ public class mainRecipeCategories extends ActionBarActivity {
     protected void onActivityResult(int requestCode,int resultCode,Intent data)
     {
         super.onActivityResult(requestCode,resultCode,data);
-        Category category = mainCategoriesList.get(currentCategoryIndex);
+
 
         if(data == null)
         {
             return;
         }
+        if(data.getExtras() != null)
+        {
+            currentCategoryIndex = data.getExtras().getInt(CURRENT_CATEGORY_INDEX);
+
+        }
+        Category category = mainCategoriesList.get(currentCategoryIndex);
         if(data != null && requestCode == PICK_IMAGE_REQUEST_CODE && resultCode == RESULT_OK)
         {
+
             Uri uri = data.getData();
             Bitmap bitmap;
             try {
@@ -496,7 +512,7 @@ public class mainRecipeCategories extends ActionBarActivity {
             }
         }
         else if (data != null && requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
-
+            currentCategoryIndex = data.getExtras().getInt(CURRENT_CATEGORY_INDEX);
             Bitmap pictureObject = Bitmap.createScaledBitmap((Bitmap) data.getExtras().get("data"),512,512,false);
             category.setPicture(ThumbnailUtils.extractThumbnail(pictureObject, 100, 100));
         }

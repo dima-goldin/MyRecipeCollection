@@ -37,6 +37,7 @@ import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
 import com.example.lenovo.myrecipecollection.ourUtilities.ExifUtil;
+import com.example.lenovo.myrecipecollection.ourUtilities.MyDatabase;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.io.File;
@@ -51,6 +52,7 @@ public class RecipeFormActivity extends ActionBarActivity {
     public static final int SAVE_RECIPE_REQUEST = 1;
 
 
+    //MyDatabase db;
     MySQLiteHelper db;
     private static final int PICK_IMAGE_REQUEST_CODE = 100;
     private static final int CAMERA_REQUEST_CODE = 120;
@@ -72,6 +74,7 @@ public class RecipeFormActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_form_new);
+        //db = new MyDatabase(this);
         db = new MySQLiteHelper(this);
 
 
@@ -404,6 +407,10 @@ public class RecipeFormActivity extends ActionBarActivity {
             {
                 db.deleteRecipeIngredients(recipeToEdit.getName());
                 db.deleteRecipe(recipeToEdit.getName());
+            }
+            if(picture == null)
+            {
+                picture = BitmapUtils.drawableToBitmap(getResources().getDrawable(R.drawable.notavaliable));
             }
             db.insertRecipe(recipeName,recipeInstructions,categoryFather,picture);
             for(Ingredient ing:ingredientsList)

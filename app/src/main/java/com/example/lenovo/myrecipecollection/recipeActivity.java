@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
+import com.example.lenovo.myrecipecollection.ourUtilities.MyDatabase;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 
 
 public class recipeActivity extends ActionBarActivity {
+    //MyDatabase db;
     MySQLiteHelper db;
     TextView instructionsView;
     ImageButton iconView;
@@ -36,6 +38,7 @@ public class recipeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        //db = new MyDatabase(this);
         db = new MySQLiteHelper(this);
         instructionsView=(TextView)findViewById(R.id.showInstructions);
         iconView=(ImageButton)findViewById(R.id.showIcon);
@@ -56,7 +59,14 @@ public class recipeActivity extends ActionBarActivity {
         nameView.setText(name);
 
         instructionsView.setText(instructions);
-        iconView.setImageBitmap(picture);
+        if(picture != null)
+        {
+            iconView.setImageBitmap(picture);
+        }else
+        {
+            iconView.setImageDrawable(getResources().getDrawable(R.drawable.notavaliable));
+        }
+
         String ingsString=new String();
         for(Ingredient ing:ingredientList)
         {

@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 
+import com.example.lenovo.myrecipecollection.R;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -19,6 +21,10 @@ public class BitmapUtils {
      * @return bitmap (from given string)
      */
     public static Bitmap StringToBitMap(String encodedString){
+        if(encodedString == null)
+        {
+            return null;
+        }
         try{
             byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
             Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
@@ -34,6 +40,10 @@ public class BitmapUtils {
      * @return converting bitmap and return a string
      */
     public static String BitMapToString(Bitmap bitmap){
+        if(bitmap == null)
+        {
+            return null;
+        }
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
         bitmap = Bitmap.createScaledBitmap(bitmap,512,512,false);
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);

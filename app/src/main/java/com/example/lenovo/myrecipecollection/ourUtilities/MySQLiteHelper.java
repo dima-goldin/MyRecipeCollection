@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String TAG = "DB";
-    public static final String DATABASE_NAME = "ourDataBase";
-    public static final int DATABASE_VERSION = 6;
+    public static final String DATABASE_NAME = "ourDataBase.db";
+    public static final int DATABASE_VERSION = 3;
     public static final String TABLE_CATEGORIES = "Categories";
     public static final String TABLE_INGREDIENTS = "Ingredients";
     public static final String TABLE_RECIPES = "Recipes";
@@ -102,8 +102,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         ArrayList<Category> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        String stament = "SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + CAT_COL_CATEGORY_FATHER + "='" + parentCategory +"';";
-        String altStament = "SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + CAT_COL_CATEGORY_FATHER + " IS NULL;";
+        String stament = "SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + CAT_COL_CATEGORY_FATHER + "='" + parentCategory +"' ORDER BY "+CAT_COL_NAME+" ASC ;";
+        String altStament = "SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + CAT_COL_CATEGORY_FATHER + " IS NULL " +"ORDER BY "+CAT_COL_NAME+" ASC ;";
 
         Cursor cursor;
         if(parentCategory == null) {
@@ -230,8 +230,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
 
-        String statment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + "='" + categoryFather + "';";
-        String altStatment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + " IS NULL;";
+        String statment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + "='" + categoryFather + "' ORDER BY "+RECIPE_COL_NAME+" ASC ;";
+        String altStatment = "SELECT "+RECIPE_COL_NAME+" FROM " +TABLE_RECIPES + " WHERE " + RECIPE_COL_CATEGORY_FATHER + " IS NULL ORDER BY "+RECIPE_COL_NAME+" ASC ;";
 
         Cursor cursor;
         if(categoryFather == null)

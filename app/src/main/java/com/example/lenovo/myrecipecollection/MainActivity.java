@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.Toolbar;
 
 import com.example.lenovo.myrecipecollection.ourUtilities.BitmapUtils;
+import com.example.lenovo.myrecipecollection.ourUtilities.MyDatabase;
 import com.example.lenovo.myrecipecollection.ourUtilities.MySQLiteHelper;
 import com.example.lenovo.myrecipecollection.ourUtilities.ScreenUtils;
 
@@ -27,14 +28,15 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     private Intent intent;
-    MySQLiteHelper db;
+    MyDatabase db;
  //   private android.support.v7.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_new);
-        db = new MySQLiteHelper(this);
+        db = new MyDatabase(this);
+        db.init();
         getWindow().setBackgroundDrawableResource(R.color.accentColor);
 
     }
